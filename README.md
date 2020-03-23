@@ -1,2 +1,2 @@
-# short-it
+# elf
 A URL Shortner service built using Go
