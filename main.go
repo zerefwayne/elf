@@ -2,54 +2,52 @@ package main
 
 import (
 	"context"
-	"github.com/jackc/pgx"
-	"github.com/joho/godotenv"
-	"log"
-	"os"
+	"github.com/gorilla/mux"
+	"github.com/zerefwayne/elf/database"
+	"net/http"
 )
 
-var (
-	host = ""
-	port = ""
-	user = ""
-	password = ""
-	dbname = ""
-	dbUrl = ""
-)
+// CONTROLLERS SECTION
 
-func init() {
-	if err := godotenv.Load(); err != nil {
-		log.Print("No .env file found")
-	} else {
-		host		= os.Getenv("PG_HOST")
-		port		= os.Getenv("PG_PORT")
-		user		= os.Getenv("PG_USER")
-		password 	= os.Getenv("PG_PASSWORD")
-		dbname 		= os.Getenv("PG_DB")
-		dbUrl 		= "postgres://"+user+":"+password+"@"+host+":"+port+"/"+dbname
-	}
+func handleGenerateElfURL(w http.ResponseWriter, r *http.Request) {
+	_, _ = w.Write([]byte("Generating the URL"))
 }
 
-var (
-	conn *pgx.Conn
-	err error
-)
+func handleDefault(w http.ResponseWriter, r *http.Request) {
+	_, _ = w.Write([]byte("Welcome to elf! It'll soon be up!"))
+}
+
+func handleRedirectElfURL(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	_, _ = w.Write([]byte("Redirecting you from "+vars["elfUrl"]+"!"))
+}
 
 func main() {
 
-	conn, err = pgx.Connect(context.Background(), dbUrl)
-	if err != nil {
-		panic(err)
-	}
+	// DATABASE SETUP
 
-	defer conn.Close(context.Background())
+	// Calls the init() function of the database package
+	// Initialise database package for the whole app
+	_ = database.DB
 
-	err = conn.Ping(context.Background())
+	// Once the main function closes, the database.Close() will be called
+	defer database.DB.Close(context.Background())
 
-	if err != nil {
-		panic(err)
-	} else {
-		log.Println("Successfully connected to database!")
-	}
+	// Pings the database of the database package
+	database.TestPing()
+
+	// ROUTER SETUP
+
+	r := mux.NewRouter()
+
+	r.HandleFunc("/", handleDefault).Methods("GET")
+	r.HandleFunc("/{elfUrl}", handleRedirectElfURL).Methods("GET")
+	r.HandleFunc("/api/generate", handleGenerateElfURL).Methods("POST")
+
+	r.Use(mux.CORSMethodMiddleware(r))
+
+	// SERVER SETUP
+
+	_ = http.ListenAndServe(":5000", r)
 
 }
