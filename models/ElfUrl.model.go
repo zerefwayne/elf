@@ -6,10 +6,10 @@ import (
 )
 
 type ElfUrl struct {
-	originalURL		string
-	shortURL		string
-	createdAt		time.Time
-	expiresAt		time.Time
+	OriginalURL		string
+	ShortURL		string
+	CreatedAt		time.Time
+	ExpiresAt		time.Time
 }
 
 func (elfUrl ElfUrl) Value() string {
