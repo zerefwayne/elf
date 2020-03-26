@@ -2,31 +2,21 @@ package main
 
 import (
 	"context"
-	"crypto/md5"
-	"encoding/hex"
+	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/zerefwayne/elf/database"
 	"github.com/zerefwayne/elf/models"
 	"log"
 	"net/http"
-	"strconv"
-	"time"
 )
-
-// Helper Methods
-
-func generateShortUrl(originalUrl string) string {
-
-	md5Sum := md5.Sum([]byte(originalUrl))
-	md5Hash := hex.EncodeToString(md5Sum[:])
-	shortUrl := md5Hash[:6]
-
-	return shortUrl
-}
 
 
 // CONTROLLERS SECTION
+
+// Three types of outputs:
+// 1: Success (Successfully created, return 200, Short URL ID), 2: Already Exists (Return 200, Short URL ID)
+// 3: Error (Couldn't create short URL, Error)
 
 // handleGenerateElf URL : POST - Input an ElfUrl structure and returns the shortURL ID or error.
 func handleGenerateElfURL(w http.ResponseWriter, r *http.Request) {
@@ -39,15 +29,37 @@ func handleGenerateElfURL(w http.ResponseWriter, r *http.Request) {
 	}
 
 	newElfUrl := new(models.ElfUrl)
-	newElfUrl.OriginalURL = r.FormValue("originalUrl")
-	newElfUrl.CreatedAt = time.Now()
 
-	newElfUrl.ShortURL = generateShortUrl(r.FormValue("originalUrl"))
+	newElfUrl.ParseForm(r)
 
-	stringToDuration, _ := strconv.ParseInt(r.FormValue("expiresAfter"), 10, 64)
-	newElfUrl.ExpiresAt = time.Now().Add(time.Second * time.Duration(stringToDuration))
+	insertQuery := "INSERT INTO shorturl(original_url, short_url, expires_at, created_at, has_expired) VALUES($1, $2, $3, $4, $5)"
 
-	_, _ = fmt.Fprintf(w, "Post from website! r.PostForm = %v\n", newElfUrl)
+	_, insertError := database.DB.Exec(context.Background(), insertQuery, newElfUrl.OriginalURL, newElfUrl.ShortURL, newElfUrl.ExpiresAt, newElfUrl.CreatedAt, newElfUrl.HasExpired)
+
+	w.Header().Set("Content-Type", "application/json")
+
+	response := new(models.GenerateResponse)
+
+	if insertError != nil {
+
+		response.Success = false
+		response.Error = insertError
+		
+	} else {
+
+		response.Success = true
+		response.AlreadyExists = false
+
+		response.GeneratedUrl.ShortURL = newElfUrl.ShortURL
+		response.GeneratedUrl.OriginalURL = newElfUrl.OriginalURL
+		response.GeneratedUrl.ExpiresAt = newElfUrl.ExpiresAt
+		response.GeneratedUrl.HasExpired = newElfUrl.HasExpired
+		response.GeneratedUrl.CreatedAt = newElfUrl.CreatedAt
+	}
+
+	jsonResponse, _ := json.Marshal(response)
+
+	_, _ = w.Write(jsonResponse)
 
 }
 
