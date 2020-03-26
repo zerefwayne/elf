@@ -44,7 +44,7 @@ func handleGenerateElfURL(w http.ResponseWriter, r *http.Request) {
 
 		response.Success = false
 		response.Error = insertError
-		
+
 	} else {
 
 		response.Success = true
@@ -72,10 +72,41 @@ func handleDefault(w http.ResponseWriter, r *http.Request) {
 
 func handleRedirectElfURL(w http.ResponseWriter, r *http.Request) {
 
+	w.Header().Set("Content-Type", "application/json")
+
 	log.Println("Route Hit: handleRedirectElfURL")
 
 	vars := mux.Vars(r)
-	_, _ = w.Write([]byte("Redirecting you from "+vars["elfUrl"]+"!"))
+
+	query := `SELECT original_url FROM shorturl WHERE short_url = '`+vars["elfUrl"]+`' LIMIT 1;`
+
+	log.Println(query)
+
+	rows, queryError := database.DB.Query(context.Background(), query)
+
+	if queryError != nil {
+		response, _ := json.Marshal(queryError)
+		_, _ = w.Write(response)
+	} else {
+
+		defer rows.Close()
+
+		for rows.Next() {
+			originalUrl := ""
+			err := rows.Scan(&originalUrl)
+
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			fmt.Println("Redirecting to:", originalUrl)
+			http.Redirect(w, r, originalUrl, 301)
+		}
+
+		_, _ = w.Write([]byte("No URL Found"))
+
+	}
+
 }
 
 func main() {
