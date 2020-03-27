@@ -13,10 +13,8 @@ func RespondSuccess(w http.ResponseWriter, code int,  payload interface{}) {
 
 	response := new(models.Response)
 
-	payloadString, _ := json.Marshal(payload)
-
 	response.Success = true
-	response.Payload = string(payloadString)
+	response.Payload = payload
 
 	responseStr, _ := json.Marshal(response)
 
