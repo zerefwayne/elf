@@ -6,9 +6,12 @@ import (
 	"github.com/zerefwayne/elf/config"
 	url "github.com/zerefwayne/elf/controllers/url"
 	"net/http"
+	"time"
 )
 
 func main() {
+
+	time.Sleep(5*time.Second)
 
 	// DATABASE SETUP
 

@@ -2,7 +2,7 @@ package config
 
 import (
 	"context"
-	"github.com/jackc/pgx"
+	"github.com/jackc/pgx/v4"
 	"github.com/joho/godotenv"
 	"log"
 	"os"
