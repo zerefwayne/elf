@@ -1,0 +1,52 @@
+version: '3'
+services:
+  elf-server:
+    container_name: elf_backend
+    build: .
+    ports:
+      - 5000:5000
+    restart: on-failure
+    volumes:
+      - api:/usr/src/app/
+    depends_on:
+      - elf-db
+    networks:
+      - elf-backend
+
+  elf-db:
+    image: postgres:latest
+    container_name: elf_postgres
+    environment:
+      - PG_HOST=${PG_HOST}
+      - PG_PORT=${PG_PORT}
+      - PG_USER=${PG_USER}
+      - PG_PASSWORD=${PG_PASSWORD}
+      - PG_DB=${PG_DB}
+    ports:
+      - '5432:5432'
+    volumes:
+      - database_postgres:/var/lib/postgresql/data
+    networks:
+      - elf-backend
+
+  elf-pgadmin:
+    image: dpage/pgadmin4
+    container_name: elf_pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    depends_on:
+      - elf-db
+    ports:
+      - "5050:80"
+    networks:
+      - elf-backend
+    restart: unless-stopped
+
+volumes:
+  api:
+  database_postgres:
+
+networks:
+  elf-backend:
+    driver: bridge
