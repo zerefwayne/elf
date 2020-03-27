@@ -1,4 +1,4 @@
-package database
+package config
 
 import (
 	"context"
@@ -26,14 +26,14 @@ func init() {
 
 	if err := godotenv.Load(); err != nil {
 		log.Fatal(err)
-	} else {
-
-		host		= os.Getenv("PG_HOST")
-		port		= os.Getenv("PG_PORT")
-		user		= os.Getenv("PG_USER")
-		password 	= os.Getenv("PG_PASSWORD")
-		dbname 		= os.Getenv("PG_DB")
-		dbUrl 		= "postgres://"+user+":"+password+"@"+host+":"+port+"/"+dbname
+	} else
+	{
+		host = os.Getenv("PG_HOST")
+		port = os.Getenv("PG_PORT")
+		user = os.Getenv("PG_USER")
+		password = os.Getenv("PG_PASSWORD")
+		dbname = os.Getenv("PG_DB")
+		dbUrl = "postgres://" + user + ":" + password + "@" + host + ":" + port + "/" + dbname
 
 		log.Println("Database: Connecting to database at:", dbUrl)
 
@@ -44,8 +44,8 @@ func init() {
 		} else {
 			log.Println("Database: Successfully connected!")
 		}
-
 	}
+
 }
 
 
