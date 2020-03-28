@@ -4,6 +4,7 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
 	"time"
@@ -37,10 +38,13 @@ func (newElfUrl ElfUrl) Value() string {
 
 func (newElfUrl *ElfUrl) ParseForm(r *http.Request) {
 
+	fmt.Printf("form %v\n", r.Form)
+	fmt.Printf("originalUrl: %s\n", r.FormValue("originalUrl"))
+
 	newElfUrl.OriginalURL = r.FormValue("originalUrl")
 	newElfUrl.CreatedAt = time.Now()
 
-	newElfUrl.ShortURL = generateShortUrl(r.FormValue("originalUrl"))
+	newElfUrl.ShortURL = generateShortUrl(newElfUrl.OriginalURL)
 
 	stringToDuration, _ := strconv.ParseInt(r.FormValue("expiresAfter"), 10, 64)
 	newElfUrl.ExpiresAt = time.Now().Add(time.Second * time.Duration(stringToDuration))

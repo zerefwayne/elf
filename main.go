@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/gorilla/mux"
 	"github.com/zerefwayne/elf/config"
+	"github.com/rs/cors"
 	url "github.com/zerefwayne/elf/controllers/url"
 	"net/http"
 	"time"
@@ -29,14 +30,13 @@ func main() {
 
 	r := mux.NewRouter()
 
-	r.Use(mux.CORSMethodMiddleware(r))
-
 	r.HandleFunc("/", url.DefaultHandler).Methods("GET")
 	r.HandleFunc("/{shortUrl}", url.RedirectURLHandler).Methods("GET")
 	r.HandleFunc("/api/generate", url.GenerateURLHandler).Methods("POST")
 
 	// SERVER SETUP
 
-	_ = http.ListenAndServe(":5000", r)
+	handler := cors.AllowAll().Handler(r)
+	_ = http.ListenAndServe(":5000", handler)
 
 }

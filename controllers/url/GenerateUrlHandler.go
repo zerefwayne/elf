@@ -6,14 +6,11 @@ import (
 	"github.com/zerefwayne/elf/database"
 	"github.com/zerefwayne/elf/models"
 	"github.com/zerefwayne/elf/utils"
-	"log"
 	"net/http"
 )
 
 // handleGenerateElf URL : POST - Input an ElfUrl structure and returns the shortURL ID or error.
 func GenerateURLHandler(w http.ResponseWriter, r *http.Request) {
-
-	log.Println("Route Hit: handleGenerateElfURL")
 
 	if err := r.ParseForm(); err != nil {
 		_, _ = fmt.Fprintf(w, "Error while parsing the form: %v", err)
