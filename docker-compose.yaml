@@ -1,7 +1,7 @@
 version: '3'
 services:
   elf-server:
-    build: .
+    build: ./api
     restart: on-failure
     environment:
       - DB_HOST=${PG_HOST}
