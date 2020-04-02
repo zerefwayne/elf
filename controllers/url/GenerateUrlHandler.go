@@ -1,8 +1,8 @@
 package controllers
 
 import (
+	"encoding/json"
 	"errors"
-	"fmt"
 	"github.com/zerefwayne/elf/database"
 	"github.com/zerefwayne/elf/models"
 	"github.com/zerefwayne/elf/utils"
@@ -10,18 +10,20 @@ import (
 	"net/http"
 )
 
+
 // handleGenerateElf URL : POST - Input an ElfUrl structure and returns the shortURL ID or error.
 func GenerateURLHandler(w http.ResponseWriter, r *http.Request) {
 
-	if err := r.ParseForm(); err != nil {
-		_, _ = fmt.Fprintf(w, "Error while parsing the form: %v", err)
-		return
-	}
+	defer r.Body.Close()
 
-	// Creating a new model out of the parameters
+	requestBody := new(models.GenerateRequest)
+
+	_ = json.NewDecoder(r.Body).Decode(requestBody)
 
 	newElfUrl := new(models.ElfUrl)
-	newElfUrl.ParseForm(r)
+	newElfUrl.ParseForm(requestBody)
+
+	log.Printf("Hit Generate URL Handler %v\n\n", newElfUrl)
 
 	existsAlready, existentialCrisis := database.FetchShortURLExists(newElfUrl.ShortURL)
 
