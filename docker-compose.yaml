@@ -16,6 +16,16 @@ services:
     networks:
       - elf-backend
 
+  elf-frontend:
+    build: ./web-client
+    restart: on-failure
+    depends_on:
+      - elf-server
+    networks:
+      - elf-backend
+    ports:
+      - '8080:80'
+
   elf-db:
     image: postgres:latest
     environment:

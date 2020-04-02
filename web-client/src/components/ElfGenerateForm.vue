@@ -46,11 +46,9 @@
       <hr class="my-4" />
       <p class="lead" v-if="shortUrlRecieved">
         Generated Short URL:
-        <a
-          target="_"
-          :href="`http://localhost:5000/${responseData.shortUrl}`"
-          >{{ `http://localhost:5000/${responseData.shortUrl}` }}</a
-        >
+        <a target="_" :href="`${baseURL}${responseData.shortUrl}`">{{
+          `${baseURL}${responseData.shortUrl}`
+        }}</a>
       </p>
     </div>
   </div>
@@ -74,7 +72,8 @@ export default {
         createdAt: "2020-04-02T18:15:25.624026969+05:30",
         expiresAfter: "2020-04-02T18:16:25.624029244+05:30",
         hasExpired: false
-      }
+      },
+      err: null
     };
   },
   methods: {
@@ -85,14 +84,14 @@ export default {
         this.formData.originalUrl == null ||
         this.formData.originalUrl == ""
       ) {
-        console.log("Please enter the URL before submitting the form.");
+        // console.log("Please enter the URL before submitting the form.");
       } else {
         let finalFormData = {
           originalUrl: this.formData.originalUrl,
           expiresAfter: this.formData.expiresAfter || 60
         };
 
-        console.log(finalFormData);
+        // console.log(finalFormData);
 
         this.axios
           .post("/api/generate", finalFormData)
@@ -102,7 +101,8 @@ export default {
           })
           .catch(err => {
             this.shortUrlRecieved = false;
-            console.error(err);
+            this.err = err;
+            // console.error(err);
           });
       }
     }
