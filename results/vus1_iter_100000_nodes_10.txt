@@ -1,0 +1,52 @@
+docker run -i --network=elf_elf-backend loadimpact/k6 run --iterations 100000 - <script.js
+
+          /\      |‾‾|  /‾‾/  /‾/
+     /\  /  \     |  |_/  /  / /
+    /  \/    \    |      |  /  ‾‾\
+   /          \   |  |‾\  \ | (_) |
+  / __________ \  |__|  \__\ \___/ .io
+
+  execution: local--------------------------------------------------]   servertor
+     output: -
+     script: -
+
+    duration: -, iterations: 100000
+         vus: 1, max: 1
+
+time="2020-04-02T10:18:46Z" level=info msg=Running i=258 t=915.275718mstarting
+time="2020-04-02T10:18:47Z" level=info msg=Running i=636 t=1.915068131s
+time="2020-04-02T10:18:48Z" level=info msg=Running i=1019 t=2.915070832s
+...
+time="2020-04-02T10:23:55Z" level=info msg=Running i=95305 t=5m9.915189322s
+time="2020-04-02T10:23:56Z" level=info msg=Running i=95583 t=5m10.915153808s
+time="2020-04-02T10:23:57Z" level=info msg=Running i=95962 t=5m11.915068966s
+time="2020-04-02T10:23:58Z" level=info msg=Running i=96336 t=5m12.915066248s
+time="2020-04-02T10:23:59Z" level=info msg=Running i=96715 t=5m13.915065585s
+time="2020-04-02T10:24:00Z" level=info msg=Running i=97086 t=5m14.915069734s
+time="2020-04-02T10:24:01Z" level=info msg=Running i=97455 t=5m15.915047418s
+time="2020-04-02T10:24:02Z" level=info msg=Running i=97829 t=5m16.915079141s
+time="2020-04-02T10:24:03Z" level=info msg=Running i=98210 t=5m17.915067338s
+time="2020-04-02T10:24:04Z" level=info msg=Running i=98583 t=5m18.915078922s
+time="2020-04-02T10:24:05Z" level=info msg=Running i=98961 t=5m19.915078239s
+time="2020-04-02T10:24:06Z" level=info msg=Running i=99339 t=5m20.915068447s
+time="2020-04-02T10:24:07Z" level=info msg=Running i=99705 t=5m21.915068849s
+time="2020-04-02T10:24:08Z" level=info msg="Test finished" i=100000 t=5m22.699077666s
+
+    ✗ is status 200
+     ↳  99% — ✓ 99680 / ✗ 320
+
+    checks.....................: 99.68% ✓ 99680 ✗ 320
+    data_received..............: 38 MB  116 kB/s
+    data_sent..................: 22 MB  69 kB/s
+    http_req_blocked...........: avg=7.77µs  min=2.2µs    med=3.76µs  max=12.21ms  p(90)=8.11µs   p(95)=10.82µs
+    http_req_connecting........: avg=2.04µs  min=0s       med=0s      max=11.89ms  p(90)=0s       p(95)=0s
+    http_req_duration..........: avg=2.23ms  min=875.64µs med=1.78ms  max=506.97ms p(90)=3.18ms   p(95)=4.26ms
+    http_req_receiving.........: avg=87.02µs min=33.23µs  med=70.63µs max=6ms      p(90)=150.72µs p(95)=183.07µs
+    http_req_sending...........: avg=30.97µs min=13.62µs  med=24.71µs max=722.54µs p(90)=49.04µs  p(95)=64.68µs
+    http_req_tls_handshaking...: avg=0s      min=0s       med=0s      max=0s       p(90)=0s       p(95)=0s
+    http_req_waiting...........: avg=2.11ms  min=798.88µs med=1.67ms  max=506.66ms p(90)=3ms      p(95)=4.08ms
+    http_reqs..................: 100000 309.886228/s
+    iteration_duration.........: avg=3.2ms   min=1.44ms   med=2.56ms  max=507.88ms p(90)=4.99ms   p(95)=6.15ms
+    iterations.................: 100000 309.886228/s
+    vus........................: 1      min=1   max=1
+    vus_max....................: 1      min=1   max=1

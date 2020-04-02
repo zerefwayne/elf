@@ -52,8 +52,8 @@ func FetchShortURLExists(shortUrl string) (bool, error) {
 
 	query := `SELECT original_url FROM shorturl WHERE short_url = '`+shortUrl+`' LIMIT 1;`
 
-	//log.Println(query)
-	log.Printf("Checking existence of %s", shortUrl)
+	// log.Println(query)
+	// log.Printf("Checking existence of %s", shortUrl)
 
 	rows, queryError := config.DB.Query(context.Background(), query)
 

@@ -6,6 +6,7 @@ import (
 	"github.com/zerefwayne/elf/database"
 	"github.com/zerefwayne/elf/models"
 	"github.com/zerefwayne/elf/utils"
+	"log"
 	"net/http"
 )
 
@@ -40,6 +41,7 @@ func GenerateURLHandler(w http.ResponseWriter, r *http.Request) {
 
 			if insertError != nil {
 				utils.RespondError(w, http.StatusInternalServerError, insertError)
+				log.Fatal(insertError)
 			} else {
 				utils.RespondSuccess(w, http.StatusOK, newElfUrl)
 			}
