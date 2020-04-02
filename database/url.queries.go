@@ -48,7 +48,7 @@ func FetchOriginalURL(shortUrl string) (string, error) {
 	}
 }
 
-func FetchShortURLExists(shortUrl string) (bool, error) {
+func FetchShortURLExists(shortUrl string) (bool, string, error) {
 
 	query := `SELECT original_url FROM shorturl WHERE short_url = '`+shortUrl+`' LIMIT 1;`
 
@@ -58,7 +58,7 @@ func FetchShortURLExists(shortUrl string) (bool, error) {
 	rows, queryError := config.DB.Query(context.Background(), query)
 
 	if queryError != nil {
-		return false, queryError
+		return false, "", queryError
 	} else {
 
 		defer rows.Close()
@@ -68,13 +68,13 @@ func FetchShortURLExists(shortUrl string) (bool, error) {
 			err := rows.Scan(&originalUrl)
 
 			if err != nil {
-				return false, err
+				return false, "", err
 			} else {
-				return true, nil
+				return true, originalUrl, nil
 			}
-
 		}
-		return false, nil
+
+		return false, "", nil
 	}
 
 }

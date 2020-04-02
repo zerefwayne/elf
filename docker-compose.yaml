@@ -11,6 +11,8 @@ services:
       - DB_NAME=${PG_DB}
     volumes:
       - api:/usr/src/app/
+    expose:
+      - '5000'
     depends_on:
       - elf-db
     networks:
@@ -23,6 +25,8 @@ services:
       - elf-server
     networks:
       - elf-backend
+    expose:
+      - '80'
     ports:
       - '8080:80'
 
@@ -53,6 +57,7 @@ services:
       - elf-backend
     depends_on:
       - elf-server
+      - elf-frontend
     ports:
       - "4000:4000"
 

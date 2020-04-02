@@ -7,7 +7,7 @@ import VueAxios from "vue-axios";
 
 Vue.config.productionTip = false;
 
-Vue.prototype.baseURL = "http://localhost:4000/";
+Vue.prototype.baseURL = "http://localhost:5000/";
 
 axios.defaults.baseURL = Vue.prototype.baseURL;
 

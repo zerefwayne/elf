@@ -45,7 +45,7 @@
 
       <hr class="my-4" />
       <p class="lead" v-if="shortUrlRecieved">
-        Generated Short URL:
+        {{ alreadyExists ? "Short URL Exists: " : "Generated Short URL:" }}
         <a target="_" :href="`${baseURL}${responseData.shortUrl}`">{{
           `${baseURL}${responseData.shortUrl}`
         }}</a>
@@ -73,12 +73,14 @@ export default {
         expiresAfter: "2020-04-02T18:16:25.624029244+05:30",
         hasExpired: false
       },
-      err: null
+      err: null,
+      alreadyExists: false
     };
   },
   methods: {
     generateUrl() {
       this.shortUrlRecieved = false;
+      this.alreadyExists = false;
 
       if (
         this.formData.originalUrl == null ||
@@ -96,13 +98,15 @@ export default {
         this.axios
           .post("/api/generate", finalFormData)
           .then(res => {
+            console.log(res.data);
             this.shortUrlRecieved = true;
-            this.responseData = res.data.Payload;
+            this.responseData = res.data.payload;
+            this.alreadyExists = res.data.alreadyExists;
           })
           .catch(err => {
             this.shortUrlRecieved = false;
             this.err = err;
-            // console.error(err);
+            console.err(err);
           });
       }
     }

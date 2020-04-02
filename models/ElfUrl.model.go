@@ -11,7 +11,7 @@ import (
 
 // REQUIRED: Requires Generation of normalized URL
 
-func generateShortUrl(originalUrl string) string {
+func GenerateShortUrl(originalUrl string) string {
 
 	md5Sum := md5.Sum([]byte(originalUrl))
 	md5Hash := hex.EncodeToString(md5Sum[:])
@@ -37,7 +37,6 @@ func (newElfUrl *ElfUrl) ParseForm(requestBody *GenerateRequest) {
 
 	newElfUrl.OriginalURL = requestBody.OriginalUrl
 	newElfUrl.CreatedAt = time.Now()
-	newElfUrl.ShortURL = generateShortUrl(requestBody.OriginalUrl)
 	newElfUrl.ExpiresAt = time.Now().Add(time.Second * time.Duration(requestBody.ExpiresAfter))
 	newElfUrl.HasExpired = false
 

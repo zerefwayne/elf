@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-func RespondSuccess(w http.ResponseWriter, code int,  payload interface{}) {
+func RespondSuccess(w http.ResponseWriter, code int, exists bool, payload interface{}) {
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(code)
@@ -15,6 +15,7 @@ func RespondSuccess(w http.ResponseWriter, code int,  payload interface{}) {
 
 	response.Success = true
 	response.Payload = payload
+	response.AlreadyExists = exists
 
 	responseStr, _ := json.Marshal(response)
 
@@ -29,10 +30,8 @@ func RespondError(w http.ResponseWriter, code int, err error) {
 
 	response := new(models.Response)
 
-	errString, _ := json.Marshal(err)
-
 	response.Success = false
-	response.Payload = string(errString)
+	response.Payload = err
 
 	responseStr, _ := json.Marshal(response)
 

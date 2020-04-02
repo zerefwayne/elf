@@ -2,11 +2,9 @@ package controllers
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/zerefwayne/elf/database"
 	"github.com/zerefwayne/elf/models"
 	"github.com/zerefwayne/elf/utils"
-	"log"
 	"net/http"
 )
 
@@ -23,34 +21,21 @@ func GenerateURLHandler(w http.ResponseWriter, r *http.Request) {
 	newElfUrl := new(models.ElfUrl)
 	newElfUrl.ParseForm(requestBody)
 
-	log.Printf("Hit Generate URL Handler %v\n\n", newElfUrl)
+	newElfUrl.ShortURL = models.GenerateShortUrl(newElfUrl.OriginalURL)
 
-	existsAlready, existentialCrisis := database.FetchShortURLExists(newElfUrl.ShortURL)
+	exists, _, existentialCrisis := database.FetchShortURLExists(newElfUrl.ShortURL)
 
 	if existentialCrisis != nil {
 		utils.RespondError(w, http.StatusInternalServerError, existentialCrisis)
-	} else {
-
-		if existsAlready == true {
-
-			utils.RespondError(w, http.StatusInternalServerError, errors.New("short URL: "+newElfUrl.ShortURL+" exists in the database."))
-
-		} else {
-
-			// Inserting newElfUrl into database
-
-			insertError := database.InsertURL(newElfUrl)
-
-			if insertError != nil {
-				utils.RespondError(w, http.StatusInternalServerError, insertError)
-				log.Fatal(insertError)
-			} else {
-				utils.RespondSuccess(w, http.StatusOK, newElfUrl)
-			}
-
-		}
-
+		return
 	}
 
+	if exists == false {
+		if err := database.InsertURL(newElfUrl); err != nil {
+			utils.RespondError(w, http.StatusInternalServerError, err)
+		}
+	}
+
+	utils.RespondSuccess(w, http.StatusOK, exists, newElfUrl)
 
 }
